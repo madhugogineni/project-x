@@ -1,0 +1,14 @@
+services:
+  site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    command: npx next dev --port 3000
+    ports:
+      - "${SITE_PORT}:3000"
+    env_file: .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next

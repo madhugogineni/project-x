@@ -1,0 +1,35 @@
+{
+  "name": "project-x-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.cjs --fresh --port 3001",
+    "dev:cached": "node scripts/dev.cjs --port 3001",
+    "dev:fresh": "node scripts/dev.cjs --fresh --port 3001",
+    "dev:turbo": "node scripts/dev.cjs --fresh --port 3001",
+    "dev:turbo:cached": "node scripts/dev.cjs --port 3001",
+    "dev:webpack": "node scripts/dev.cjs --port 3001",
+    "dev:webpack:fresh": "node scripts/dev.cjs --fresh --port 3001",
+    "dev:poll": "node scripts/dev.cjs --poll --port 3001",
+    "build": "next build",
+    "start": "next start --port 3001",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^14.2.32",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-select": "^5.10.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.30",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.32",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.8.2"
+  }
+}
