@@ -15,11 +15,11 @@ npm install
 npm run dev
 ```
 
-The app runs on `http://localhost:3001`.
+The app runs on `http://localhost:3021` in the local Docker workflow.
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and point `NEXT_PUBLIC_API_BASE_URL` to the backend.
+Copy `.env.example` to `.env` and point `NEXT_PUBLIC_API_BASE_URL` to the backend.
 
 ## Scripts
 
@@ -28,4 +28,5 @@ npm run dev
 npm run build
 npm run start
 npm run lint
+npm run test:ui
 ```

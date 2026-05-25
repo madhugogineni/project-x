@@ -1,6 +1,6 @@
-# Continuum API
+# Project X API
 
-FastAPI backend for the Continuum platform.
+FastAPI backend for the Project X platform.
 
 ## Stack
 
@@ -14,10 +14,10 @@ FastAPI backend for the Continuum platform.
 
 ```bash
 uv sync --extra dev
-uv run uvicorn continuum_api.main:app --reload
+uv run uvicorn main:app --reload --app-dir src
 ```
 
-The API runs on `http://localhost:8000`.
+The API runs on `http://localhost:8020` in the local Docker workflow.
 
 ## Environment
 
@@ -26,7 +26,8 @@ Copy `.env.example` to `.env` and adjust values for the local database, frontend
 ## Scripts
 
 ```bash
-uv run uvicorn continuum_api.main:app --reload
+uv run uvicorn main:app --reload --app-dir src
 uv run pytest
 uv run ruff check .
+uv run ruff format .
 ```

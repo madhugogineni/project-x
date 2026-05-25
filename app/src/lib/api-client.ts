@@ -1,7 +1,7 @@
 const API_BASE_URL =
   (typeof window !== "undefined"
     ? process.env.NEXT_PUBLIC_API_BASE_URL
-    : undefined) ?? "http://localhost:8000/api/v1";
+    : undefined) ?? "http://localhost:8020/api/v1";
 
 const ACCESS_TOKEN_KEY = "project-x-access-token";
 const REFRESH_TOKEN_KEY = "project-x-refresh-token";

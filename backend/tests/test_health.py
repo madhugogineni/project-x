@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app import app
+from core.config import get_settings
 
 client = TestClient(app)
 
@@ -10,6 +11,8 @@ def test_health_check() -> None:
 
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
+    assert response.json()["service"] == get_settings().project_name
+    assert response.headers["x-request-id"]
 
 
 def test_profile_types_catalog() -> None:

@@ -11,21 +11,21 @@ Containers correspond to independent claim processes.
 
 Bank Relationship
 
-Savings accounts  
-Current accounts  
-Fixed deposits  
-Recurring deposits  
-Lockers  
+Savings accounts
+Current accounts
+Fixed deposits
+Recurring deposits
+Lockers
 
 ---
 
 Demat Account
 
-Stocks  
-Bonds  
-ETFs  
-REITs  
-Sovereign Gold Bonds  
+Stocks
+Bonds
+ETFs
+REITs
+Sovereign Gold Bonds
 
 ---
 
@@ -37,53 +37,53 @@ Non-demat mutual fund holdings.
 
 Retirement Accounts
 
-EPF  
-PPF  
-NPS  
+EPF
+PPF
+NPS
 
 ---
 
 Insurance Policies
 
-Life insurance  
-Health insurance  
-Property insurance  
+Life insurance
+Health insurance
+Property insurance
 
 ---
 
 Real Estate
 
-Residential property  
-Commercial property  
-Land  
+Residential property
+Commercial property
+Land
 
 ---
 
 Loans
 
-Home loans  
-Personal loans  
-Business loans  
+Home loans
+Personal loans
+Business loans
 
 ---
 
 Business Ownership
 
-Private company shares  
-LLP interests  
-Partnership stakes  
+Private company shares
+LLP interests
+Partnership stakes
 
 ---
 
 Government Schemes
 
-NSC  
-SCSS  
-Sukanya Samriddhi  
+NSC
+SCSS
+Sukanya Samriddhi
 
 ---
 
 Crypto Accounts
 
-Exchange accounts  
+Exchange accounts
 Self custody wallets

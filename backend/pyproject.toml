@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "continuum-api"
+name = "project-x-api"
 version = "0.1.0"
-description = "Backend API for Continuum, a financial continuity platform."
+description = "Backend API for Project X, a financial continuity platform."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -20,6 +20,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "httpx>=0.28.1,<1.0.0",
+  "pre-commit>=4.2.0,<5.0.0",
   "pytest>=8.3.5,<9.0.0",
   "pytest-asyncio>=0.25.3,<1.0.0",
   "ruff>=0.11.0,<1.0.0"

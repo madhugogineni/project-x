@@ -48,7 +48,7 @@ export default function HomePage() {
 
       <section className="section section--cta">
         <div>
-          <span className="eyebrow">What Continuum does not do</span>
+          <span className="eyebrow">{`What ${siteConfig.name} does not do`}</span>
           <h2>It never stores passwords, private keys, or performs transactions.</h2>
         </div>
         <p>

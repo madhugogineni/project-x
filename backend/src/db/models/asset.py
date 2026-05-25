@@ -20,16 +20,10 @@ class AssetContainer(UuidPrimaryKey, TimestampedModel, Base):
 class Asset(UuidPrimaryKey, TimestampedModel, Base):
     __tablename__ = "assets"
 
-    container_id: Mapped[str] = mapped_column(
-        ForeignKey("asset_containers.id"),
-        nullable=False
-    )
+    container_id: Mapped[str] = mapped_column(ForeignKey("asset_containers.id"), nullable=False)
     name: Mapped[str] = mapped_column(String(160), nullable=False)
     account_reference: Mapped[str] = mapped_column(String(64), nullable=False)
-    approximate_value: Mapped[Decimal | None] = mapped_column(
-        Numeric(14, 2),
-        nullable=True
-    )
+    approximate_value: Mapped[Decimal | None] = mapped_column(Numeric(14, 2), nullable=True)
     currency_code: Mapped[str] = mapped_column(String(3), default="INR", nullable=False)
     nominee_recorded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 

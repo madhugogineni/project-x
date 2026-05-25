@@ -1,0 +1,39 @@
+exclude: ^app/tsconfig\.tsbuildinfo$
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      - id: backend-ruff-format
+        name: backend ruff format
+        entry: bash -lc 'cd backend && uv run ruff format .'
+        language: system
+        pass_filenames: false
+        files: ^backend/.*\.py$
+
+      - id: backend-ruff-check
+        name: backend ruff check
+        entry: bash -lc 'cd backend && uv run ruff check .'
+        language: system
+        pass_filenames: false
+        files: ^backend/.*\.py$
+
+      - id: app-eslint
+        name: app eslint
+        entry: bash -lc 'cd app && npm run lint'
+        language: system
+        pass_filenames: false
+        files: ^app/.*\.(js|jsx|ts|tsx)$
+
+      - id: site-eslint
+        name: site eslint
+        entry: bash -lc 'cd site && npm run lint'
+        language: system
+        pass_filenames: false
+        files: ^site/.*\.(js|jsx|ts|tsx)$

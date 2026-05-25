@@ -28,4 +28,4 @@ ENV PYTHONUNBUFFERED=1
 USER appuser
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src", "--no-access-log"]

@@ -1,7 +1,9 @@
+const productName = process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "Project X";
+
 export const appConfig = {
-  name: "Project X",
+  name: productName,
   description:
-    "Operational interface for profile-aware asset management, encrypted documents, and nominee release workflows.",
+    `${productName} is the operational interface for profile-aware asset management, encrypted documents, and nominee release workflows.`,
   navigation: [
     {
       href: "/",

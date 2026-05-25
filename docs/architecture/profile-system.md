@@ -5,9 +5,9 @@ The system supports multiple operational contexts.
 
 A human account may act as:
 
-Primary user  
-Advisor  
-Nominee  
+Primary user
+Advisor
+Nominee
 
 Profiles isolate these roles.
 
@@ -39,7 +39,7 @@ Maps advisor or nominee profiles to primary profiles.
 
 Example
 
-Advisor → multiple primary profiles  
+Advisor → multiple primary profiles
 Nominee → multiple primary profiles
 
 ---

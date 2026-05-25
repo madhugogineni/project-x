@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
@@ -255,9 +256,11 @@ function InstitutionAvatar({
       <span
         className={`${dim} rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden bg-white`}
       >
-        <img
+        <Image
           src={entry.logoUrl}
           alt={name}
+          width={size === "sm" ? 24 : 32}
+          height={size === "sm" ? 24 : 32}
           className="w-full h-full object-contain p-0.5"
           onError={() => setImgFailed(true)}
         />
@@ -291,7 +294,6 @@ function InstitutionOptionLabel({
   if (option.value === "__other__") {
     return <span>{option.label}</span>;
   }
-  const entry = getInstitutionEntry(containerType, option.value);
   return (
     <span className="flex items-center gap-2">
       <InstitutionAvatar containerType={containerType} name={option.value} size="sm" />
@@ -1561,16 +1563,6 @@ function TypeSelectorBar({
       })}
     </div>
   );
-}
-
-/* ─── Summary helper ─────────────────────────────────────────────────── */
-
-function summaryText(detail: Record<string, unknown>): string {
-  return Object.entries(detail)
-    .filter(([, v]) => v != null && v !== "")
-    .slice(0, 2)
-    .map(([k, v]) => `${formatFieldName(k)}: ${v}`)
-    .join(" · ");
 }
 
 /* ─── AssetsPage ─────────────────────────────────────────────────────── */

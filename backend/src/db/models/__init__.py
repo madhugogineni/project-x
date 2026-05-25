@@ -10,5 +10,5 @@ __all__ = [
     "Document",
     "Profile",
     "ProfileAccess",
-    "ProfileType"
+    "ProfileType",
 ]

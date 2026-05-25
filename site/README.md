@@ -1,6 +1,6 @@
-# Continuum Site
+# Project X Site
 
-Public marketing website for Continuum, the financial continuity platform.
+Public marketing website for Project X, the financial continuity platform.
 
 ## Stack
 
@@ -15,11 +15,11 @@ npm install
 npm run dev
 ```
 
-The app runs on `http://localhost:3000`.
+The site runs on `http://localhost:3020` in the local Docker workflow.
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and adjust values as needed.
+Copy `.env.example` to `.env` and adjust values as needed.
 
 ## Scripts
 

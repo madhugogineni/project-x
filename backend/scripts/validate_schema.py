@@ -11,8 +11,8 @@ Usage:
 You will be prompted for connection credentials interactively.
 """
 
-import sys
 import getpass
+import sys
 from collections import defaultdict
 
 try:
@@ -100,7 +100,6 @@ EXPECTED_TABLES = {
         "created_at": t("timestamptz"),
         "updated_at": t("timestamptz"),
     },
-
     # ── Auth Domain ──
     "account_otp_session": {
         "id": t("uuid"),
@@ -130,7 +129,6 @@ EXPECTED_TABLES = {
         "created_at": t("timestamptz"),
         "last_used_at": t("timestamptz"),
     },
-
     # ── Profile Domain ──
     "profile": {
         "id": t("uuid"),
@@ -140,7 +138,6 @@ EXPECTED_TABLES = {
         "created_at": t("timestamptz"),
         "updated_at": t("timestamptz"),
     },
-
     # ── Nominee & Access Domain ──
     "account_nominee": {
         "id": t("uuid"),
@@ -193,7 +190,6 @@ EXPECTED_TABLES = {
         "created_at": t("timestamptz"),
         "updated_at": t("timestamptz"),
     },
-
     # ── Asset Registry Domain ──
     "asset_container": {
         "id": t("uuid"),
@@ -357,7 +353,6 @@ EXPECTED_TABLES = {
         "is_active": t("boolean"),
         "created_at": t("timestamptz"),
     },
-
     # ── Inactivity Engine Domain ──
     "account_inactivity_state": {
         "id": t("uuid"),
@@ -375,7 +370,6 @@ EXPECTED_TABLES = {
         "created_at": t("timestamptz"),
         "updated_at": t("timestamptz"),
     },
-
     # ── Audit Domain ──
     "audit_log": {
         "id": t("uuid"),
@@ -501,6 +495,7 @@ EXPECTED_PARTITIONS = ["audit_log_2025", "audit_log_2026"]
 # VALIDATION LOGIC
 # ---------------------------------------------------------------------------
 
+
 class SchemaValidator:
     def __init__(self, conn):
         self.conn = conn
@@ -523,34 +518,44 @@ class SchemaValidator:
 
     def get_tables(self, schema="public"):
         """Get all tables including partitioned parents."""
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT tablename FROM pg_tables
             WHERE schemaname = %s
             ORDER BY tablename;
-        """, (schema,))
+        """,
+            (schema,),
+        )
         return {row["tablename"] for row in self.cursor.fetchall()}
 
     def get_columns(self, table_name, schema="public"):
         """Get columns and their types for a table."""
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT column_name, data_type, is_nullable, column_default
             FROM information_schema.columns
             WHERE table_schema = %s AND table_name = %s
             ORDER BY ordinal_position;
-        """, (schema, table_name))
+        """,
+            (schema, table_name),
+        )
         return {row["column_name"]: row for row in self.cursor.fetchall()}
 
     def get_indexes(self, table_name, schema="public"):
         """Get index names for a table."""
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT indexname FROM pg_indexes
             WHERE schemaname = %s AND tablename = %s;
-        """, (schema, table_name))
+        """,
+            (schema, table_name),
+        )
         return {row["indexname"] for row in self.cursor.fetchall()}
 
     def get_unique_constraints(self, table_name, schema="public"):
         """Get unique constraint column sets for a table."""
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT con.conname, array_agg(att.attname ORDER BY u.ord) AS columns
             FROM pg_constraint con
             JOIN pg_class cls ON cls.oid = con.conrelid
@@ -561,12 +566,15 @@ class SchemaValidator:
               AND cls.relname = %s
               AND con.contype = 'u'
             GROUP BY con.conname;
-        """, (schema, table_name))
+        """,
+            (schema, table_name),
+        )
         return [tuple(row["columns"]) for row in self.cursor.fetchall()]
 
     def get_check_constraints(self, table_name, schema="public"):
         """Get check constraint definitions for a table."""
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT con.conname, pg_get_constraintdef(con.oid) AS definition
             FROM pg_constraint con
             JOIN pg_class cls ON cls.oid = con.conrelid
@@ -574,16 +582,21 @@ class SchemaValidator:
             WHERE nsp.nspname = %s
               AND cls.relname = %s
               AND con.contype = 'c';
-        """, (schema, table_name))
+        """,
+            (schema, table_name),
+        )
         return {row["conname"]: row["definition"] for row in self.cursor.fetchall()}
 
     def check_partitioned(self, table_name, schema="public"):
         """Check if a table is partitioned."""
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT relkind FROM pg_class c
             JOIN pg_namespace n ON n.oid = c.relnamespace
             WHERE n.nspname = %s AND c.relname = %s;
-        """, (schema, table_name))
+        """,
+            (schema, table_name),
+        )
         row = self.cursor.fetchone()
         if row:
             return row["relkind"] == "p"  # 'p' = partitioned table
@@ -591,7 +604,8 @@ class SchemaValidator:
 
     def get_foreign_keys(self, table_name, schema="public"):
         """Get foreign key references for a table."""
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT
                 con.conname,
                 att.attname AS column_name,
@@ -606,13 +620,17 @@ class SchemaValidator:
               AND cls.relname = %s
               AND con.contype = 'f'
             ORDER BY con.conname, u.ord;
-        """, (schema, table_name))
+        """,
+            (schema, table_name),
+        )
         fks = defaultdict(list)
         for row in self.cursor.fetchall():
-            fks[row["conname"]].append({
-                "column": row["column_name"],
-                "ref_table": row["ref_table"],
-            })
+            fks[row["conname"]].append(
+                {
+                    "column": row["column_name"],
+                    "ref_table": row["ref_table"],
+                }
+            )
         return fks
 
     # ── Validation Steps ──
@@ -651,13 +669,11 @@ class SchemaValidator:
 
             if missing:
                 for col in sorted(missing):
-                    self.log("FAIL", "COLUMN",
-                             f"{table_name}.{col} is MISSING")
+                    self.log("FAIL", "COLUMN", f"{table_name}.{col} is MISSING")
 
             if extra:
                 for col in sorted(extra):
-                    self.log("WARN", "COLUMN",
-                             f"{table_name}.{col} is extra (not in schema spec)")
+                    self.log("WARN", "COLUMN", f"{table_name}.{col} is extra (not in schema spec)")
 
             # Type check for columns that exist
             for col_name, expected_type in expected_cols.items():
@@ -666,9 +682,12 @@ class SchemaValidator:
                     if actual_type.startswith(expected_type) or actual_type == expected_type:
                         pass  # silent pass for types to reduce noise
                     else:
-                        self.log("FAIL", "TYPE",
-                                 f"{table_name}.{col_name}: "
-                                 f"expected '{expected_type}', got '{actual_type}'")
+                        self.log(
+                            "FAIL",
+                            "TYPE",
+                            f"{table_name}.{col_name}: "
+                            f"expected '{expected_type}', got '{actual_type}'",
+                        )
 
     def validate_indexes(self):
         print("\n═══ INDEX VALIDATION ═══")
@@ -689,13 +708,11 @@ class SchemaValidator:
 
             for idx_name in expected_idxs:
                 # Check exact match or partition-prefixed match
-                found = (idx_name in db_idxs or
-                         any(idx_name in di for di in db_idxs))
+                found = idx_name in db_idxs or any(idx_name in di for di in db_idxs)
                 if found:
                     self.log("PASS", "INDEX", f"{table_name} → {idx_name}")
                 else:
-                    self.log("FAIL", "INDEX",
-                             f"{table_name} → {idx_name} is MISSING")
+                    self.log("FAIL", "INDEX", f"{table_name} → {idx_name} is MISSING")
 
     def validate_unique_constraints(self):
         print("\n═══ UNIQUE CONSTRAINT VALIDATION ═══")
@@ -711,11 +728,9 @@ class SchemaValidator:
                 found = any(set(expected_cols) == set(db_u) for db_u in db_uniques)
                 col_str = ", ".join(expected_cols)
                 if found:
-                    self.log("PASS", "UNIQUE",
-                             f"{table_name} ({col_str})")
+                    self.log("PASS", "UNIQUE", f"{table_name} ({col_str})")
                 else:
-                    self.log("FAIL", "UNIQUE",
-                             f"{table_name} ({col_str}) is MISSING")
+                    self.log("FAIL", "UNIQUE", f"{table_name} ({col_str}) is MISSING")
 
     def validate_check_constraints(self):
         print("\n═══ CHECK CONSTRAINT VALIDATION ═══")
@@ -733,11 +748,9 @@ class SchemaValidator:
                 normalized = check_fragment.lower().replace(" ", "")
                 all_normalized = all_defs.replace(" ", "")
                 if normalized in all_normalized:
-                    self.log("PASS", "CHECK",
-                             f"{table_name}: {check_fragment}")
+                    self.log("PASS", "CHECK", f"{table_name}: {check_fragment}")
                 else:
-                    self.log("FAIL", "CHECK",
-                             f"{table_name}: {check_fragment} is MISSING")
+                    self.log("FAIL", "CHECK", f"{table_name}: {check_fragment} is MISSING")
 
     def validate_partitions(self):
         print("\n═══ PARTITION VALIDATION ═══")
@@ -748,8 +761,7 @@ class SchemaValidator:
             self.log("PASS", "PARTITION", "audit_log is partitioned")
         else:
             if "audit_log" in db_tables:
-                self.log("FAIL", "PARTITION",
-                         "audit_log exists but is NOT partitioned")
+                self.log("FAIL", "PARTITION", "audit_log exists but is NOT partitioned")
             else:
                 self.log("FAIL", "PARTITION", "audit_log table is missing")
 
@@ -793,22 +805,23 @@ class SchemaValidator:
             fks = self.get_foreign_keys(table_name)
             # Build column -> ref_table map
             col_ref_map = {}
-            for fk_name, fk_cols in fks.items():
+            for _fk_name, fk_cols in fks.items():
                 for fc in fk_cols:
                     col_ref_map[fc["column"]] = fc["ref_table"]
 
             for col, expected_ref in expected_refs.items():
                 if col in col_ref_map:
                     if col_ref_map[col] == expected_ref:
-                        self.log("PASS", "FK",
-                                 f"{table_name}.{col} → {expected_ref}")
+                        self.log("PASS", "FK", f"{table_name}.{col} → {expected_ref}")
                     else:
-                        self.log("FAIL", "FK",
-                                 f"{table_name}.{col} references "
-                                 f"'{col_ref_map[col]}' instead of '{expected_ref}'")
+                        self.log(
+                            "FAIL",
+                            "FK",
+                            f"{table_name}.{col} references "
+                            f"'{col_ref_map[col]}' instead of '{expected_ref}'",
+                        )
                 else:
-                    self.log("FAIL", "FK",
-                             f"{table_name}.{col} → {expected_ref} FK is MISSING")
+                    self.log("FAIL", "FK", f"{table_name}.{col} → {expected_ref} FK is MISSING")
 
     def validate_security_columns(self):
         """Verify that no forbidden columns exist (Aadhaar, private keys, etc.)."""
@@ -826,11 +839,13 @@ class SchemaValidator:
             db_cols = self.get_columns(table_name)
             for col in bad_cols:
                 if col in db_cols:
-                    self.log("FAIL", "SECURITY",
-                             f"{table_name}.{col} MUST NOT exist (security violation)")
+                    self.log(
+                        "FAIL",
+                        "SECURITY",
+                        f"{table_name}.{col} MUST NOT exist (security violation)",
+                    )
                 else:
-                    self.log("PASS", "SECURITY",
-                             f"{table_name} has no '{col}' column")
+                    self.log("PASS", "SECURITY", f"{table_name} has no '{col}' column")
 
     def run_all(self):
         print("=" * 60)
@@ -847,8 +862,10 @@ class SchemaValidator:
         self.validate_security_columns()
 
         print("\n" + "=" * 60)
-        print(f"  SUMMARY:  ✅ {self.passed} passed  |  "
-              f"❌ {self.failed} failed  |  ⚠️  {self.warnings} warnings")
+        print(
+            f"  SUMMARY:  ✅ {self.passed} passed  |  "
+            f"❌ {self.failed} failed  |  ⚠️  {self.warnings} warnings"
+        )
         print("=" * 60)
 
         if self.failed == 0:
@@ -863,6 +880,7 @@ class SchemaValidator:
 # MAIN
 # ---------------------------------------------------------------------------
 
+
 def main():
     print("\n🔐 Project X — Schema Validator")
     print("─" * 40)
@@ -873,7 +891,7 @@ def main():
     dbname = input("  Database name: ").strip()
     user = input("  Username: ").strip()
     password = getpass.getpass("  Password: ")
-    schema = input("  Schema [public]: ").strip() or "public"
+    input("  Schema [public]: ").strip() or "public"
 
     if not dbname or not user:
         print("\n❌ Database name and username are required.")
