@@ -1,37 +1,13 @@
 name: project-x
 
 services:
-  db:
-    profiles: ["local", "deployed"]
-    image: postgres:16-alpine
-    restart: unless-stopped
-    env_file:
-      - path: ./backend/.env.example
-        required: true
-      - path: ./backend/.env
-        required: false
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   backend:
     profiles: ["local"]
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: builder
-    command:
-      [
-        "sh",
-        "-lc",
-        "export CONTINUUM_DATABASE_URL=\"postgresql+asyncpg://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@db:5432/$${POSTGRES_DB}\" && uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload --app-dir src --no-access-log",
-      ]
+    command: uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload --app-dir src --no-access-log
     env_file:
       - path: ./backend/.env.example
         required: true
@@ -39,12 +15,11 @@ services:
         required: false
     ports:
       - "8020:8000"
+    networks:
+      - project-x
     volumes:
       - ./backend:/app
       - backend_venv:/app/.venv
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
       test:
         [
@@ -74,6 +49,8 @@ services:
       CHOKIDAR_USEPOLLING: "true"
     ports:
       - "3021:3001"
+    networks:
+      - project-x
     volumes:
       - ./app:/app
       - app_node_modules:/app/node_modules
@@ -99,6 +76,8 @@ services:
       CHOKIDAR_USEPOLLING: "true"
     ports:
       - "3020:3000"
+    networks:
+      - project-x
     volumes:
       - ./site:/app
       - site_node_modules:/app/node_modules
@@ -113,12 +92,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
-    command:
-      [
-        "sh",
-        "-lc",
-        "export CONTINUUM_DATABASE_URL=\"postgresql+asyncpg://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@db:5432/$${POSTGRES_DB}\" && uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir src --no-access-log",
-      ]
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir src --no-access-log
     env_file:
       - path: ./backend/.env.example
         required: true
@@ -126,9 +100,8 @@ services:
         required: false
     ports:
       - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
+    networks:
+      - project-x
     healthcheck:
       test:
         [
@@ -154,6 +127,8 @@ services:
         required: false
     ports:
       - "3001:3001"
+    networks:
+      - project-x
     depends_on:
       backend-prod:
         condition: service_started
@@ -171,14 +146,18 @@ services:
         required: false
     ports:
       - "3000:3000"
+    networks:
+      - project-x
     depends_on:
       app-prod:
         condition: service_started
+
+networks:
+  project-x:
 
 volumes:
   app_next:
   app_node_modules:
   backend_venv:
-  pgdata:
   site_next:
   site_node_modules:

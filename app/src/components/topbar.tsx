@@ -3,32 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/lib/profile-context";
 import { appConfig } from "@/lib/app-config";
-
-/* ─── shared theme hook ─────────────────────────────────────────────── */
-type Theme = "light" | "dark";
-const storageKey = "project-x-app-theme";
-
-function useTheme() {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    setTheme(saved === "light" || saved === "dark" ? saved : "light");
-  }, []);
-
-  const toggle = () => {
-    const next: Theme = theme === "light" ? "dark" : "light";
-    setTheme(next);
-    localStorage.setItem(storageKey, next);
-    document.documentElement.setAttribute("data-theme", next);
-    document.documentElement.style.colorScheme = next;
-  };
-
-  return { theme, toggle };
-}
 
 /* ─── helpers ────────────────────────────────────────────────────────── */
 function getInitials(name: string | null): string {
@@ -41,26 +19,6 @@ function getInitials(name: string | null): string {
     .join("")
     .toUpperCase();
 }
-
-const SunIcon = () => (
-  <svg className="w-[1.1rem] h-[1.1rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" />
-    <line x1="12" y1="21" x2="12" y2="23" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-    <line x1="1" y1="12" x2="3" y2="12" />
-    <line x1="21" y1="12" x2="23" y2="12" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-  </svg>
-);
-
-const MoonIcon = () => (
-  <svg className="w-[1.1rem] h-[1.1rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3A7 7 0 0 0 21 12.79Z" />
-  </svg>
-);
 
 /* ─── Topbar ─────────────────────────────────────────────────────────── */
 type TopbarProps = {
@@ -76,7 +34,6 @@ const PROFILE_LABEL: Record<string, string> = {
 export function Topbar({ onSidebarToggle }: TopbarProps) {
   const { user, logout } = useAuth();
   const { activeProfile } = useProfile();
-  const { theme, toggle } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -205,16 +162,10 @@ export function Topbar({ onSidebarToggle }: TopbarProps) {
                     Settings
                   </Link>
 
-                  {/* Theme toggle — same icon-button style */}
-                  <button
-                    type="button"
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-bg-secondary hover:text-text-primary transition-colors text-left"
-                    role="menuitem"
-                    onClick={toggle}
-                  >
-                    {theme === "light" ? <MoonIcon /> : <SunIcon />}
-                    {theme === "light" ? "Dark mode" : "Light mode"}
-                  </button>
+                  <div className="flex items-center justify-between gap-2.5 px-4 py-2.5 text-sm text-text-secondary">
+                    <span>Appearance</span>
+                    <ThemeToggle />
+                  </div>
 
                   <div className="border-t border-border-light my-1" />
 
@@ -236,15 +187,7 @@ export function Topbar({ onSidebarToggle }: TopbarProps) {
             </div>
           </>
         ) : (
-          /* ── Not authenticated: icon-only theme toggle ── */
-          <button
-            type="button"
-            className="w-8 h-8 flex items-center justify-center rounded-md text-text-secondary hover:bg-bg-secondary hover:text-text-primary transition-all duration-[180ms]"
-            onClick={toggle}
-            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-          >
-            {theme === "light" ? <MoonIcon /> : <SunIcon />}
-          </button>
+          <ThemeToggle />
         )}
       </div>
     </header>

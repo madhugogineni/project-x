@@ -1,42 +1,102 @@
-from decimal import Decimal
+from __future__ import annotations
 
-from sqlalchemy import Boolean, ForeignKey, Numeric, String, Text
+from decimal import Decimal
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Boolean, ForeignKey, Index, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.models.base import Base, TimestampedModel, UuidPrimaryKey
 
-
-class AssetContainer(UuidPrimaryKey, TimestampedModel, Base):
-    __tablename__ = "asset_containers"
-
-    profile_id: Mapped[str] = mapped_column(ForeignKey("profiles.id"), nullable=False)
-    institution_name: Mapped[str] = mapped_column(String(160), nullable=False)
-    container_type: Mapped[str] = mapped_column(String(80), nullable=False)
-    reference_note: Mapped[str | None] = mapped_column(Text(), nullable=True)
-
-    assets: Mapped[list["Asset"]] = relationship(back_populates="container")
+if TYPE_CHECKING:
+    from db.models.asset_detail import (
+        AssetBankDetail,
+        AssetBusinessDetail,
+        AssetCryptoDetail,
+        AssetDematDetail,
+        AssetDocument,
+        AssetGovtSavingsDetail,
+        AssetInsuranceDetail,
+        AssetLoanDetail,
+        AssetMutualFundDetail,
+        AssetRealEstateDetail,
+        AssetReceivableDetail,
+        AssetRetirementDetail,
+    )
+    from db.models.nominee import AccountNomineeScope
 
 
 class Asset(UuidPrimaryKey, TimestampedModel, Base):
-    __tablename__ = "assets"
+    """Universal parent record for every asset type.
 
-    container_id: Mapped[str] = mapped_column(ForeignKey("asset_containers.id"), nullable=False)
-    name: Mapped[str] = mapped_column(String(160), nullable=False)
-    account_reference: Mapped[str] = mapped_column(String(64), nullable=False)
-    approximate_value: Mapped[Decimal | None] = mapped_column(Numeric(14, 2), nullable=True)
-    currency_code: Mapped[str] = mapped_column(String(3), default="INR", nullable=False)
-    nominee_recorded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    Advisor vs primary distinction:
+      account_id == added_by_account_id  → primary added this asset themselves
+      account_id != added_by_account_id  → advisor added this asset on primary's behalf
+    """
 
-    container: Mapped[AssetContainer] = relationship(back_populates="assets")
-    documents: Mapped[list["Document"]] = relationship(back_populates="asset")
+    __tablename__ = "asset"
+    __table_args__ = (
+        Index("idx_asset_account", "account_id"),
+        Index("idx_asset_type", "account_id", "container_type"),
+        Index("idx_asset_added_by", "added_by_account_id"),
+    )
 
+    # Owner of this asset
+    account_id: Mapped[str] = mapped_column(
+        ForeignKey("account.id", ondelete="CASCADE"), nullable=False
+    )
+    # Who created this record (primary or advisor)
+    added_by_account_id: Mapped[str] = mapped_column(ForeignKey("account.id"), nullable=False)
 
-class Document(UuidPrimaryKey, TimestampedModel, Base):
-    __tablename__ = "documents"
+    container_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    # BANK_RELATIONSHIP | DEMAT_ACCOUNT | MUTUAL_FUND_FOLIO | RETIREMENT_ACCOUNT |
+    # INSURANCE_POLICY | REAL_ESTATE | LOAN_ACCOUNT | BUSINESS_OWNERSHIP |
+    # GOVERNMENT_SAVINGS_SCHEME | CRYPTO_ACCOUNT | RECEIVABLE_CLAIM
 
-    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"), nullable=False)
-    storage_key: Mapped[str] = mapped_column(String(255), nullable=False)
-    original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
-    encryption_state: Mapped[str] = mapped_column(String(40), nullable=False)
+    institution_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    nickname: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    approximate_value: Mapped[Decimal | None] = mapped_column(
+        Numeric(15, 2), nullable=True
+    )  # user-declared, not verified
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    asset: Mapped[Asset] = relationship(back_populates="documents")
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
+    # Relationships to typed detail tables (one-to-one each)
+    bank_detail: Mapped[AssetBankDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    demat_detail: Mapped[AssetDematDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    mutual_fund_detail: Mapped[AssetMutualFundDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    retirement_detail: Mapped[AssetRetirementDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    insurance_detail: Mapped[AssetInsuranceDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    real_estate_detail: Mapped[AssetRealEstateDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    loan_detail: Mapped[AssetLoanDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    business_detail: Mapped[AssetBusinessDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    govt_savings_detail: Mapped[AssetGovtSavingsDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    crypto_detail: Mapped[AssetCryptoDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    receivable_detail: Mapped[AssetReceivableDetail | None] = relationship(
+        back_populates="container", uselist=False
+    )
+    documents: Mapped[list[AssetDocument]] = relationship(back_populates="container")
+    nominee_scope_rows: Mapped[list[AccountNomineeScope]] = relationship(
+        foreign_keys="AccountNomineeScope.container_id"
+    )

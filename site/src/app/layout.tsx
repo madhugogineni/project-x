@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { IBM_Plex_Sans, Sora } from "next/font/google";
 
 import "@/app/globals.css";
+import { ThemeScript } from "@/components/theme-script";
 import { siteConfig } from "@/lib/site-config";
 
-const displayFont = Fraunces({
+const displayFont = Sora({
   subsets: ["latin"],
   variable: "--font-display"
 });
 
-const bodyFont = Manrope({
+const bodyFont = IBM_Plex_Sans({
   subsets: ["latin"],
-  variable: "--font-body"
+  variable: "--font-body",
+  weight: ["400", "500", "600", "700"]
 });
 
 export const metadata: Metadata = {
@@ -29,8 +31,16 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
-      <body>{children}</body>
+    <html
+      lang="en"
+      data-theme="light"
+      suppressHydrationWarning
+      className={`${displayFont.variable} ${bodyFont.variable}`}
+    >
+      <body>
+        <ThemeScript />
+        {children}
+      </body>
     </html>
   );
 }

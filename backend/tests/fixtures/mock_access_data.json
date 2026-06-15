@@ -1,0 +1,820 @@
+{
+  "metadata": {
+    "version": 2,
+    "description": "Extensive mocked data for auth, profile, nominee, asset, document, and release test scenarios.",
+    "notes": [
+      "All ids are stable and human-readable so tests can reference them directly.",
+      "This fixture is intended for mocked unit tests, not real database seeding.",
+      "Nominee scope is the canonical source of nominee asset visibility and permission."
+    ]
+  },
+  "accounts": [
+    {
+      "id": "acct-primary-001",
+      "email": "primary@example.com",
+      "phone": "919999999991",
+      "full_name": "Primary User",
+      "status": "ACTIVE",
+      "email_verified": true,
+      "phone_verified": true
+    },
+    {
+      "id": "acct-advisor-001",
+      "email": "advisor@example.com",
+      "phone": "919999999992",
+      "full_name": "Advisor User",
+      "status": "ACTIVE",
+      "email_verified": true,
+      "phone_verified": true
+    },
+    {
+      "id": "acct-nominee-001",
+      "email": "nominee@example.com",
+      "phone": "919999999993",
+      "full_name": "Nominee User",
+      "status": "ACTIVE",
+      "email_verified": true,
+      "phone_verified": true
+    },
+    {
+      "id": "acct-primary-002",
+      "email": "secondary-primary@example.com",
+      "phone": "919999999994",
+      "full_name": "Secondary Primary",
+      "status": "ACTIVE",
+      "email_verified": true,
+      "phone_verified": true
+    },
+    {
+      "id": "acct-signup-001",
+      "email": "fresh-signup@example.com",
+      "phone": "919999999995",
+      "full_name": "Fresh Signup User",
+      "status": "ACTIVE",
+      "email_verified": false,
+      "phone_verified": true
+    }
+  ],
+  "profiles": [
+    {
+      "id": "profile-primary-001-primary",
+      "account_id": "acct-primary-001",
+      "profile_type": "PRIMARY",
+      "is_active": true
+    },
+    {
+      "id": "profile-primary-001-nominee",
+      "account_id": "acct-primary-001",
+      "profile_type": "NOMINEE",
+      "is_active": true
+    },
+    {
+      "id": "profile-advisor-001-primary",
+      "account_id": "acct-advisor-001",
+      "profile_type": "PRIMARY",
+      "is_active": true
+    },
+    {
+      "id": "profile-advisor-001-nominee",
+      "account_id": "acct-advisor-001",
+      "profile_type": "NOMINEE",
+      "is_active": true
+    },
+    {
+      "id": "profile-advisor-001-advisor",
+      "account_id": "acct-advisor-001",
+      "profile_type": "ADVISOR",
+      "is_active": true
+    },
+    {
+      "id": "profile-nominee-001-primary",
+      "account_id": "acct-nominee-001",
+      "profile_type": "PRIMARY",
+      "is_active": true
+    },
+    {
+      "id": "profile-nominee-001-nominee",
+      "account_id": "acct-nominee-001",
+      "profile_type": "NOMINEE",
+      "is_active": true
+    },
+    {
+      "id": "profile-primary-002-primary",
+      "account_id": "acct-primary-002",
+      "profile_type": "PRIMARY",
+      "is_active": true
+    },
+    {
+      "id": "profile-primary-002-nominee",
+      "account_id": "acct-primary-002",
+      "profile_type": "NOMINEE",
+      "is_active": true
+    },
+    {
+      "id": "profile-signup-001-primary",
+      "account_id": "acct-signup-001",
+      "profile_type": "PRIMARY",
+      "is_active": true
+    },
+    {
+      "id": "profile-signup-001-nominee",
+      "account_id": "acct-signup-001",
+      "profile_type": "NOMINEE",
+      "is_active": true
+    }
+  ],
+  "profile_access": [
+    {
+      "id": "access-advisor-primary-001",
+      "accessor_profile_id": "profile-advisor-001-advisor",
+      "primary_profile_id": "profile-primary-001-primary",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "access-nominee-primary-001",
+      "accessor_profile_id": "profile-nominee-001-nominee",
+      "primary_profile_id": "profile-primary-001-primary",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "access-advisor-primary-002-revoked",
+      "accessor_profile_id": "profile-advisor-001-advisor",
+      "primary_profile_id": "profile-primary-002-primary",
+      "status": "REVOKED"
+    },
+    {
+      "id": "access-signup-user-primary-002-nominee",
+      "accessor_profile_id": "profile-signup-001-nominee",
+      "primary_profile_id": "profile-primary-002-primary",
+      "status": "ACTIVE"
+    }
+  ],
+  "nominees": [
+    {
+      "id": "nominee-linked-001",
+      "primary_account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "full_name": "Nominee User",
+      "relationship": "SPOUSE",
+      "phone": "919999999993",
+      "email": "nominee@example.com",
+      "share_percentage": 60,
+      "status": "LINKED",
+      "linked_account_id": "acct-nominee-001",
+      "nominee_profile_id": "profile-nominee-001-nominee"
+    },
+    {
+      "id": "nominee-pending-001",
+      "primary_account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "full_name": "Pending Nominee",
+      "relationship": "CHILD",
+      "phone": "919999999996",
+      "email": null,
+      "share_percentage": 40,
+      "status": "PENDING",
+      "linked_account_id": null,
+      "nominee_profile_id": null
+    },
+    {
+      "id": "nominee-invited-001",
+      "primary_account_id": "acct-primary-001",
+      "added_by_account_id": "acct-advisor-001",
+      "full_name": "Invited Nominee",
+      "relationship": "PARENT",
+      "phone": "919999999997",
+      "email": "invited.nominee@example.com",
+      "share_percentage": 20,
+      "status": "INVITED",
+      "linked_account_id": null,
+      "nominee_profile_id": null
+    },
+    {
+      "id": "nominee-removed-001",
+      "primary_account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "full_name": "Removed Nominee",
+      "relationship": "SIBLING",
+      "phone": "919999999998",
+      "email": "removed.nominee@example.com",
+      "share_percentage": 10,
+      "status": "REMOVED",
+      "linked_account_id": null,
+      "nominee_profile_id": null
+    },
+    {
+      "id": "nominee-autolink-primary2-phone-email",
+      "primary_account_id": "acct-primary-002",
+      "added_by_account_id": "acct-primary-002",
+      "full_name": "Fresh Signup User",
+      "relationship": "OTHER",
+      "phone": "919999999995",
+      "email": "fresh-signup@example.com",
+      "share_percentage": 100,
+      "status": "INVITED",
+      "linked_account_id": null,
+      "nominee_profile_id": null
+    },
+    {
+      "id": "nominee-autolink-primary2-duplicate",
+      "primary_account_id": "acct-primary-002",
+      "added_by_account_id": "acct-primary-002",
+      "full_name": "Fresh Signup User Duplicate",
+      "relationship": "OTHER",
+      "phone": "919999999995",
+      "email": "fresh-signup@example.com",
+      "share_percentage": 100,
+      "status": "PENDING",
+      "linked_account_id": null,
+      "nominee_profile_id": null
+    },
+    {
+      "id": "nominee-autolink-phone-only",
+      "primary_account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "full_name": "Phone Only Match",
+      "relationship": "OTHER",
+      "phone": "919999999995",
+      "email": null,
+      "share_percentage": 15,
+      "status": "PENDING",
+      "linked_account_id": null,
+      "nominee_profile_id": null
+    },
+    {
+      "id": "nominee-autolink-email-mismatch",
+      "primary_account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "full_name": "Email Mismatch",
+      "relationship": "OTHER",
+      "phone": "919999999995",
+      "email": "different@example.com",
+      "share_percentage": 15,
+      "status": "PENDING",
+      "linked_account_id": null,
+      "nominee_profile_id": null
+    }
+  ],
+  "nominee_scopes": [
+    {
+      "id": "scope-linked-summary-visible",
+      "account_nominee_id": "nominee-linked-001",
+      "container_id": "asset-bank-001",
+      "permission": "VIEW_SUMMARY",
+      "is_active": true,
+      "is_visible": true,
+      "visibility_trigger_source": "PRIMARY_GRANTED"
+    },
+    {
+      "id": "scope-linked-full-visible",
+      "account_nominee_id": "nominee-linked-001",
+      "container_id": "asset-insurance-001",
+      "permission": "VIEW_FULL",
+      "is_active": true,
+      "is_visible": true,
+      "visibility_trigger_source": "PRIMARY_GRANTED"
+    },
+    {
+      "id": "scope-linked-docs-visible",
+      "account_nominee_id": "nominee-linked-001",
+      "container_id": "asset-real-estate-001",
+      "permission": "VIEW_WITH_DOCUMENTS",
+      "is_active": true,
+      "is_visible": true,
+      "visibility_trigger_source": "INACTIVITY_TRIGGER"
+    },
+    {
+      "id": "scope-linked-hidden",
+      "account_nominee_id": "nominee-linked-001",
+      "container_id": "asset-loan-001",
+      "permission": "VIEW_FULL",
+      "is_active": true,
+      "is_visible": false,
+      "visibility_trigger_source": null
+    },
+    {
+      "id": "scope-linked-inactive",
+      "account_nominee_id": "nominee-linked-001",
+      "container_id": "asset-business-001",
+      "permission": "VIEW_WITH_DOCUMENTS",
+      "is_active": false,
+      "is_visible": true,
+      "visibility_trigger_source": "PRIMARY_GRANTED"
+    },
+    {
+      "id": "scope-pending-assigned-visible-false",
+      "account_nominee_id": "nominee-pending-001",
+      "container_id": "asset-bank-001",
+      "permission": "VIEW_SUMMARY",
+      "is_active": true,
+      "is_visible": false,
+      "visibility_trigger_source": null
+    },
+    {
+      "id": "scope-invited-assigned-visible-false",
+      "account_nominee_id": "nominee-invited-001",
+      "container_id": "asset-insurance-001",
+      "permission": "VIEW_FULL",
+      "is_active": true,
+      "is_visible": false,
+      "visibility_trigger_source": null
+    },
+    {
+      "id": "scope-autolink-primary2-visible-false",
+      "account_nominee_id": "nominee-autolink-primary2-phone-email",
+      "container_id": "asset-primary2-bank-001",
+      "permission": "VIEW_WITH_DOCUMENTS",
+      "is_active": true,
+      "is_visible": false,
+      "visibility_trigger_source": null
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-bank-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "container_type": "BANK_RELATIONSHIP",
+      "institution_name": "Acme Bank",
+      "approximate_value": "250000.00",
+      "notes": "Family operating account",
+      "is_active": true
+    },
+    {
+      "id": "asset-insurance-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-advisor-001",
+      "container_type": "INSURANCE_POLICY",
+      "institution_name": "Acme Life",
+      "approximate_value": "1000000.00",
+      "notes": "Term life policy",
+      "is_active": true
+    },
+    {
+      "id": "asset-real-estate-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "container_type": "REAL_ESTATE",
+      "institution_name": "Self-held Property",
+      "approximate_value": "8500000.00",
+      "notes": "Primary apartment",
+      "is_active": true
+    },
+    {
+      "id": "asset-loan-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-advisor-001",
+      "container_type": "LOAN_ACCOUNT",
+      "institution_name": "Acme Home Finance",
+      "approximate_value": "1500000.00",
+      "notes": "Home loan",
+      "is_active": true
+    },
+    {
+      "id": "asset-business-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "container_type": "BUSINESS_OWNERSHIP",
+      "institution_name": "Acme Ventures",
+      "approximate_value": "5000000.00",
+      "notes": "Private limited stake",
+      "is_active": false
+    },
+    {
+      "id": "asset-primary2-bank-001",
+      "account_id": "acct-primary-002",
+      "added_by_account_id": "acct-primary-002",
+      "container_type": "BANK_RELATIONSHIP",
+      "institution_name": "Secondary Bank",
+      "approximate_value": "175000.00",
+      "notes": "Secondary workspace account",
+      "is_active": true
+    }
+  ],
+  "asset_details": {
+    "asset-bank-001": {
+      "account_type": "SAVINGS",
+      "account_number": "XXXXXX4321",
+      "ifsc_code": "ACME0001234"
+    },
+    "asset-insurance-001": {
+      "policy_type": "LIFE",
+      "policy_number": "XXXX1234",
+      "sum_assured": "1000000.00"
+    },
+    "asset-real-estate-001": {
+      "property_type": "RESIDENTIAL",
+      "city": "Bengaluru",
+      "state": "Karnataka"
+    },
+    "asset-loan-001": {
+      "loan_type": "HOME",
+      "loan_account": "XXXX2201",
+      "outstanding_amount": "1500000.00"
+    },
+    "asset-business-001": {
+      "business_type": "PRIVATE_LIMITED",
+      "business_name": "Acme Ventures",
+      "ownership_percentage": "51.00"
+    },
+    "asset-primary2-bank-001": {
+      "account_type": "SAVINGS",
+      "account_number": "XXXXXX9988",
+      "ifsc_code": "SECB0001200"
+    }
+  },
+  "documents": [
+    {
+      "id": "doc-insurance-001",
+      "container_id": "asset-insurance-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-advisor-001",
+      "document_type": "POLICY_DOCUMENT",
+      "original_file_name": "term-life-policy.pdf",
+      "mime_type": "application/pdf",
+      "file_size_bytes": 204800,
+      "upload_status": "UPLOADED",
+      "is_active": true
+    },
+    {
+      "id": "doc-real-estate-001",
+      "container_id": "asset-real-estate-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "document_type": "PROPERTY_PAPER",
+      "original_file_name": "apartment-sale-deed.pdf",
+      "mime_type": "application/pdf",
+      "file_size_bytes": 512000,
+      "upload_status": "UPLOADED",
+      "is_active": true
+    },
+    {
+      "id": "doc-loan-001",
+      "container_id": "asset-loan-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-advisor-001",
+      "document_type": "LEGAL_AGREEMENT",
+      "original_file_name": "loan-agreement.pdf",
+      "mime_type": "application/pdf",
+      "file_size_bytes": 302144,
+      "upload_status": "UPLOADED",
+      "is_active": true
+    },
+    {
+      "id": "doc-business-failed-001",
+      "container_id": "asset-business-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "document_type": "OTHER",
+      "original_file_name": "board-resolution.pdf",
+      "mime_type": "application/pdf",
+      "file_size_bytes": 65536,
+      "upload_status": "FAILED",
+      "is_active": true
+    },
+    {
+      "id": "doc-business-pending-001",
+      "container_id": "asset-business-001",
+      "account_id": "acct-primary-001",
+      "added_by_account_id": "acct-primary-001",
+      "document_type": "OTHER",
+      "original_file_name": "share-certificate.pdf",
+      "mime_type": "application/pdf",
+      "file_size_bytes": 98304,
+      "upload_status": "PENDING_UPLOAD",
+      "is_active": true
+    },
+    {
+      "id": "doc-primary2-bank-001",
+      "container_id": "asset-primary2-bank-001",
+      "account_id": "acct-primary-002",
+      "added_by_account_id": "acct-primary-002",
+      "document_type": "ACCOUNT_STATEMENT",
+      "original_file_name": "secondary-account-statement.pdf",
+      "mime_type": "application/pdf",
+      "file_size_bytes": 120000,
+      "upload_status": "UPLOADED",
+      "is_active": true
+    }
+  ],
+  "auth": {
+    "otp_flows": [
+      "SIGNUP",
+      "LOGIN"
+    ],
+    "otp_sessions": [
+      {
+        "id": "otp-signup-fresh-001",
+        "phone": "919999999995",
+        "purpose": "SIGNUP",
+        "attempts": 0,
+        "max_attempts": 5,
+        "resend_count": 0,
+        "max_resends": 2,
+        "consumed_at": null,
+        "verified_at": null,
+        "verified_expires_at": null,
+        "cooldown_until": null,
+        "state": "PENDING"
+      },
+      {
+        "id": "otp-login-ready-001",
+        "phone": "919999999991",
+        "purpose": "LOGIN",
+        "attempts": 1,
+        "max_attempts": 5,
+        "resend_count": 1,
+        "max_resends": 2,
+        "consumed_at": null,
+        "verified_at": null,
+        "verified_expires_at": null,
+        "cooldown_until": null,
+        "state": "PENDING"
+      },
+      {
+        "id": "otp-signup-consumed-001",
+        "phone": "919999999995",
+        "purpose": "SIGNUP",
+        "attempts": 0,
+        "max_attempts": 5,
+        "resend_count": 0,
+        "max_resends": 2,
+        "consumed_at": "2030-01-01T00:00:00Z",
+        "verified_at": "2030-01-01T00:00:00Z",
+        "verified_expires_at": "2030-01-01T00:10:00Z",
+        "cooldown_until": null,
+        "state": "CONSUMED"
+      },
+      {
+        "id": "otp-login-cooldown-001",
+        "phone": "919999999991",
+        "purpose": "LOGIN",
+        "attempts": 5,
+        "max_attempts": 5,
+        "resend_count": 2,
+        "max_resends": 2,
+        "consumed_at": null,
+        "verified_at": null,
+        "verified_expires_at": null,
+        "cooldown_until": "2030-01-01T00:10:00Z",
+        "state": "COOLDOWN"
+      }
+    ],
+    "session_groups": [
+      {
+        "session_id": "session-primary-current",
+        "account_id": "acct-primary-001",
+        "active_profile_id": "profile-primary-001-primary",
+        "tokens": [
+          {
+            "jti": "access-primary-current",
+            "token_type": "ACCESS",
+            "revoked_at": null
+          },
+          {
+            "jti": "refresh-primary-current",
+            "token_type": "REFRESH",
+            "revoked_at": null
+          }
+        ]
+      },
+      {
+        "session_id": "session-primary-other-device",
+        "account_id": "acct-primary-001",
+        "active_profile_id": "profile-primary-001-primary",
+        "tokens": [
+          {
+            "jti": "access-primary-other",
+            "token_type": "ACCESS",
+            "revoked_at": null
+          },
+          {
+            "jti": "refresh-primary-other",
+            "token_type": "REFRESH",
+            "revoked_at": null
+          }
+        ]
+      }
+    ]
+  },
+  "release": {
+    "inactivity_states": [
+      {
+        "account_id": "acct-primary-001",
+        "current_state": "HOLD",
+        "hold_expires_at": "2030-01-01T00:00:00Z",
+        "released_at": null
+      },
+      {
+        "account_id": "acct-primary-002",
+        "current_state": "TRIGGERED",
+        "hold_expires_at": null,
+        "released_at": null
+      }
+    ]
+  },
+  "scenarios": {
+    "nominee_access": [
+      {
+        "name": "linked_nominee_summary_full_docs_mix",
+        "actor_profile_id": "profile-nominee-001-nominee",
+        "primary_profile_id": "profile-primary-001-primary",
+        "expected_asset_permissions": {
+          "asset-bank-001": "VIEW_SUMMARY",
+          "asset-insurance-001": "VIEW_FULL",
+          "asset-real-estate-001": "VIEW_WITH_DOCUMENTS"
+        },
+        "expected_document_ids": [
+          "doc-real-estate-001"
+        ],
+        "expected_hidden_asset_ids": [
+          "asset-loan-001",
+          "asset-business-001"
+        ]
+      },
+      {
+        "name": "unlinked_primary_nominee_profile_has_no_access",
+        "actor_profile_id": "profile-primary-001-nominee",
+        "primary_profile_id": "profile-primary-001-primary",
+        "expected_error": "FORBIDDEN"
+      },
+      {
+        "name": "linked_nominee_hidden_scope_denied_until_visible",
+        "actor_profile_id": "profile-nominee-001-nominee",
+        "primary_profile_id": "profile-primary-001-primary",
+        "target_asset_id": "asset-loan-001",
+        "expected_error": "NOT_FOUND_OR_FORBIDDEN"
+      },
+      {
+        "name": "linked_nominee_cannot_see_inactive_scope_rows",
+        "actor_profile_id": "profile-nominee-001-nominee",
+        "primary_profile_id": "profile-primary-001-primary",
+        "target_asset_id": "asset-business-001",
+        "expected_error": "NOT_FOUND_OR_FORBIDDEN"
+      }
+    ],
+    "manual_visibility": [
+      {
+        "name": "grant_all_assigned_scope_rows",
+        "nominee_id": "nominee-pending-001",
+        "request": {
+          "is_visible": true,
+          "all_assigned": true
+        },
+        "expected_updated_scope_ids": [
+          "scope-pending-assigned-visible-false"
+        ],
+        "expected_source": "PRIMARY_GRANTED"
+      },
+      {
+        "name": "revoke_selected_scope_rows",
+        "nominee_id": "nominee-linked-001",
+        "request": {
+          "is_visible": false,
+          "container_ids": [
+            "asset-real-estate-001"
+          ]
+        },
+        "expected_updated_scope_ids": [
+          "scope-linked-docs-visible"
+        ],
+        "expected_source": "PRIMARY_REVOKED"
+      },
+      {
+        "name": "invalid_visibility_request_missing_selection",
+        "nominee_id": "nominee-linked-001",
+        "request": {
+          "is_visible": true,
+          "all_assigned": false
+        },
+        "expected_error": "VALIDATION"
+      }
+    ],
+    "scope_replace": [
+      {
+        "name": "replace_scope_for_linked_nominee_is_allowed",
+        "nominee_id": "nominee-linked-001",
+        "request": {
+          "scopes": [
+            {
+              "container_id": "asset-bank-001",
+              "permission": "VIEW_SUMMARY"
+            },
+            {
+              "container_id": "asset-real-estate-001",
+              "permission": "VIEW_WITH_DOCUMENTS"
+            }
+          ]
+        }
+      },
+      {
+        "name": "replace_scope_rejects_duplicate_container_ids",
+        "nominee_id": "nominee-linked-001",
+        "request": {
+          "scopes": [
+            {
+              "container_id": "asset-bank-001",
+              "permission": "VIEW_FULL"
+            },
+            {
+              "container_id": "asset-bank-001",
+              "permission": "VIEW_SUMMARY"
+            }
+          ]
+        },
+        "expected_error": "VALIDATION"
+      }
+    ],
+    "autolink": [
+      {
+        "name": "signup_links_phone_and_email_match",
+        "new_account_id": "acct-signup-001",
+        "new_nominee_profile_id": "profile-signup-001-nominee",
+        "expected_linked_nominee_ids": [
+          "nominee-autolink-primary2-phone-email",
+          "nominee-autolink-phone-only"
+        ],
+        "expected_skipped_nominee_ids": [
+          "nominee-autolink-primary2-duplicate",
+          "nominee-autolink-email-mismatch"
+        ]
+      }
+    ],
+    "advisor_access": [
+      {
+        "name": "advisor_can_read_and_write_primary_workspace",
+        "actor_profile_id": "profile-advisor-001-advisor",
+        "primary_profile_id": "profile-primary-001-primary",
+        "expected_can_write": true,
+        "expected_asset_ids": [
+          "asset-bank-001",
+          "asset-insurance-001",
+          "asset-real-estate-001",
+          "asset-loan-001"
+        ]
+      },
+      {
+        "name": "advisor_revoked_access_denied",
+        "actor_profile_id": "profile-advisor-001-advisor",
+        "primary_profile_id": "profile-primary-002-primary",
+        "expected_error": "FORBIDDEN"
+      }
+    ],
+    "primary_access": [
+      {
+        "name": "primary_owner_sees_active_assets_and_documents",
+        "actor_profile_id": "profile-primary-001-primary",
+        "primary_profile_id": "profile-primary-001-primary",
+        "expected_can_write": true,
+        "expected_asset_ids": [
+          "asset-bank-001",
+          "asset-insurance-001",
+          "asset-real-estate-001",
+          "asset-loan-001"
+        ],
+        "expected_document_ids": [
+          "doc-insurance-001",
+          "doc-real-estate-001",
+          "doc-loan-001",
+          "doc-business-failed-001",
+          "doc-business-pending-001"
+        ]
+      }
+    ],
+    "documents": [
+      {
+        "name": "nominee_with_view_with_documents_can_download",
+        "actor_profile_id": "profile-nominee-001-nominee",
+        "primary_profile_id": "profile-primary-001-primary",
+        "document_id": "doc-real-estate-001",
+        "expected_result": "ALLOWED"
+      },
+      {
+        "name": "nominee_without_document_permission_cannot_download",
+        "actor_profile_id": "profile-nominee-001-nominee",
+        "primary_profile_id": "profile-primary-001-primary",
+        "document_id": "doc-insurance-001",
+        "expected_error": "FORBIDDEN"
+      },
+      {
+        "name": "failed_document_not_downloadable",
+        "actor_profile_id": "profile-primary-001-primary",
+        "primary_profile_id": "profile-primary-001-primary",
+        "document_id": "doc-business-failed-001",
+        "expected_error": "BAD_REQUEST"
+      }
+    ],
+    "release": [
+      {
+        "name": "release_flips_all_hidden_active_nominee_scopes",
+        "account_id": "acct-primary-001",
+        "initial_hidden_scope_ids": [
+          "scope-linked-hidden"
+        ],
+        "expected_visible_after_release": [
+          "scope-linked-hidden"
+        ]
+      }
+    ]
+  }
+}

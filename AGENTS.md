@@ -54,6 +54,12 @@ docker compose --profile deployed up --build
 
 Use one profile at a time because the modes publish the same ports.
 
+Running service rule:
+
+- Assume any development services already running, including services launched with `make up` or Docker Compose, are user-managed.
+- Do not start, stop, rebuild, or restart application servers or repository services unless the user explicitly requests that action.
+- When validation requires a running application, use the existing services and their published ports. If they are unavailable or do not reflect required changes, report that state and ask before changing service lifecycle.
+
 Environment ownership:
 
 - `app/.env` belongs to the app

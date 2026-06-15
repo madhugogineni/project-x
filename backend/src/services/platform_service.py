@@ -1,4 +1,4 @@
-from core.config import get_settings
+from core.settings import get_settings
 from schemas.health import (
     HealthResponse,
     ModuleStatus,

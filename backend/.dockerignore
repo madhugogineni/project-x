@@ -9,5 +9,4 @@ __pycache__
 .ruff_cache
 .pytest_cache
 tests
-README.md
 agent.md

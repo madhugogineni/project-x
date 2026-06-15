@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from core.config import get_settings
+from core.settings import get_settings
 
 
 def create_engine() -> AsyncEngine:
@@ -19,8 +19,8 @@ def create_engine() -> AsyncEngine:
         settings.database_url,
         future=True,
         echo=settings.environment == "local",
-        pool_size=5,
-        max_overflow=10,
+        pool_size=10,
+        max_overflow=20,
         pool_pre_ping=True,
     )
 
@@ -60,3 +60,8 @@ async def get_managed_session() -> AsyncGenerator[AsyncSession, None]:
 async def dispose_engine() -> None:
     """Cleanly close all connections. Call on application shutdown."""
     await engine.dispose()
+
+
+async def initialize_database() -> None:
+    """Table creation is intentionally disabled at application startup."""
+    return None

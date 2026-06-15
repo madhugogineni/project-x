@@ -16,3 +16,9 @@ class ModuleStatus(BaseModel):
 class PlatformReadinessResponse(BaseModel):
     profile_types: list[str]
     modules: list[ModuleStatus]
+
+
+class DbPingResponse(BaseModel):
+    status: str = Field(examples=["ok", "error"])
+    database_url_host: str
+    detail: str | None = None

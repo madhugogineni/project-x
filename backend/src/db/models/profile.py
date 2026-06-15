@@ -1,10 +1,14 @@
 from enum import Enum
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum as SqlEnum
-from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy import Boolean, ForeignKey, Index, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.models.base import Base, TimestampedModel, UuidPrimaryKey
+
+if TYPE_CHECKING:
+    from db.models.account import Account
+    from db.models.nominee import ProfileAccess
 
 
 class ProfileType(str, Enum):
@@ -13,48 +17,33 @@ class ProfileType(str, Enum):
     NOMINEE = "NOMINEE"
 
 
-class Account(UuidPrimaryKey, TimestampedModel, Base):
-    __tablename__ = "accounts"
-
-    email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
-    full_name: Mapped[str] = mapped_column(String(160), nullable=False)
-
-    profiles: Mapped[list["Profile"]] = relationship(back_populates="account")
-
-
 class Profile(UuidPrimaryKey, TimestampedModel, Base):
-    __tablename__ = "profiles"
+    """Thin access context container. No personal data lives here.
 
-    account_id: Mapped[str] = mapped_column(ForeignKey("accounts.id"), nullable=False)
-    profile_type: Mapped[ProfileType] = mapped_column(
-        SqlEnum(ProfileType, name="profile_type"), nullable=False
-    )
-    display_name: Mapped[str] = mapped_column(String(160), nullable=False)
+    profile_type is the source of truth for access behaviour — NOMINEE vs ADVISOR.
+    Each account can have at most one profile per type.
+    """
 
-    account: Mapped[Account] = relationship(back_populates="profiles")
-    outgoing_access_links: Mapped[list["ProfileAccess"]] = relationship(
-        back_populates="granted_by_profile", foreign_keys="ProfileAccess.granted_by_profile_id"
-    )
-    incoming_access_links: Mapped[list["ProfileAccess"]] = relationship(
-        back_populates="granted_to_profile", foreign_keys="ProfileAccess.granted_to_profile_id"
-    )
-
-
-class ProfileAccess(UuidPrimaryKey, TimestampedModel, Base):
-    __tablename__ = "profile_access"
+    __tablename__ = "profile"
     __table_args__ = (
-        UniqueConstraint(
-            "granted_by_profile_id", "granted_to_profile_id", name="uq_profile_access_pair"
-        ),
+        UniqueConstraint("account_id", "profile_type", name="uq_profile_account_type"),
+        Index("idx_profile_account", "account_id"),
     )
 
-    granted_by_profile_id: Mapped[str] = mapped_column(ForeignKey("profiles.id"), nullable=False)
-    granted_to_profile_id: Mapped[str] = mapped_column(ForeignKey("profiles.id"), nullable=False)
-    access_reason: Mapped[str] = mapped_column(String(80), nullable=False)
-
-    granted_by_profile: Mapped[Profile] = relationship(
-        back_populates="outgoing_access_links", foreign_keys=[granted_by_profile_id]
+    account_id: Mapped[str] = mapped_column(
+        ForeignKey("account.id", ondelete="CASCADE"), nullable=False
     )
-    granted_to_profile: Mapped[Profile] = relationship(
-        back_populates="incoming_access_links", foreign_keys=[granted_to_profile_id]
+    profile_type: Mapped[ProfileType] = mapped_column(
+        String(20), nullable=False
+    )  # PRIMARY | ADVISOR | NOMINEE
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
+    account: Mapped["Account"] = relationship(back_populates="profiles")
+    access_as_accessor: Mapped[list["ProfileAccess"]] = relationship(
+        back_populates="accessor_profile",
+        foreign_keys="ProfileAccess.accessor_profile_id",
+    )
+    access_as_primary: Mapped[list["ProfileAccess"]] = relationship(
+        back_populates="primary_profile",
+        foreign_keys="ProfileAccess.primary_profile_id",
     )

@@ -110,6 +110,8 @@ EXPECTED_TABLES = {
         "max_attempts": t("smallint"),
         "expires_at": t("timestamptz"),
         "verified_at": t("timestamptz"),
+        "verified_expires_at": t("timestamptz"),
+        "consumed_at": t("timestamptz"),
         "created_at": t("timestamptz"),
         "ip_address": t("inet"),
         "user_agent": t("text"),
@@ -212,6 +214,7 @@ EXPECTED_TABLES = {
         "ifsc_code": t("varchar"),
         "branch_name": t("varchar"),
         "city": t("varchar"),
+        "state": t("varchar"),
         "maturity_date": t("date"),
         "interest_rate": t("numeric"),
         "created_at": t("timestamptz"),
@@ -891,7 +894,7 @@ def main():
     dbname = input("  Database name: ").strip()
     user = input("  Username: ").strip()
     password = getpass.getpass("  Password: ")
-    input("  Schema [public]: ").strip() or "public"
+    _schema = input("  Schema [public]: ").strip() or "public"
 
     if not dbname or not user:
         print("\n❌ Database name and username are required.")

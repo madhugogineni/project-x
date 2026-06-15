@@ -84,13 +84,13 @@ This starts:
 - `site` on `http://localhost:3020`
 - `app` on `http://localhost:3021`
 - `backend` on `http://localhost:8020`
-- `db` on `localhost:5432`
 
 Behavior in local mode:
 
 - `app`, `backend`, and `site` use bind mounts
 - frontend services run dev servers
 - backend runs `uvicorn --reload`
+- backend reads its database credentials from `backend/.env`
 - source edits are reflected without rebuilding containers
 - dependency changes still require a rebuild
 
@@ -120,12 +120,10 @@ Each service owns its own env file:
 The intended split is:
 
 - `app/.env`: app public URL and backend API base URL
-- `backend/.env`: PostgreSQL credentials plus backend `CONTINUUM_*` settings
+- `backend/.env`: backend settings, including the external database URL and auth configuration
 - `site/.env`: site public URL plus app URL
 
-Inside Docker Compose, the backend database URL is overridden to point at the `db` service instead of localhost.
-
-Frontend display naming is now environment-driven through `NEXT_PUBLIC_PRODUCT_NAME`, and backend service naming is driven by `CONTINUUM_PROJECT_NAME`.
+Frontend display naming is environment-driven through `NEXT_PUBLIC_PRODUCT_NAME`, and backend service naming is driven by `PROJECT_NAME`.
 
 ## Service Responsibilities
 
